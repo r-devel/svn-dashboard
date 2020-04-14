@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>R SVN build status</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cran.r-project.org/web/CRAN_web.css">
+
+<!--
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+-->
+
+
+<script type="module">
+import { Octokit } from "https://cdn.pika.dev/@octokit/rest";
+/*
+var t = $('table').DataTable({
+	paging: false,
+	searching: false
+});
+*/
+
+const octokit = new Octokit({
+	auth: atob("YjJiNzQ0MWRhZWViMDEwYjFkZjI2ZjFmNjBhN2YxZWRjNDg1ZTQ0Mw==")
+});
+
+octokit.repos.listCommits({
+	owner: "r-devel",
+	repo: "r-svn"
+});
+
+function sort_jobs(jobs){
+	console.log(jobs)
+	var out = {};
+	jobs.forEach(function(x){
+		//todo: what about duplicate runs?
+		out[x.name] = x;
+	});
+	return out;
+}
+
+function fill_run(run, tr){
+	const commit = run.head_commit;
+	const id = commit.id;
+	const author = commit.author.name;
+	const rawmsg = commit.message.split('\n\ngit-svn-id');
+	const message = rawmsg[0].substr(0, 60);
+	const revision = rawmsg.length > 1 ? rawmsg[1].match(/trunk@(?<rev>[0-9]*)/).groups.rev : "";
+	const date = new Date(commit.timestamp);	
+	tr.add_cell(date.toISOString().slice(0, 10));
+	tr.add_cell(revision);
+	tr.add_cell('<a href="https://github.com/r-devel/r-svn/commit/'+id+'"><i>'+ message + '</i></a>');
+	tr.add_cell(author);
+}
+
+function set_text(conclusion){
+	switch(conclusion){
+		case 'success':
+			return 'OK';
+		case 'failure':
+			return 'FAIL';
+		return conclusion;
+	}	
+}
+
+function set_color(conclusion){
+	switch(conclusion){
+		case 'success':
+			return 'black';
+		case 'failure':
+			return 'red';
+		return 'blue';
+	}
+}
+
+function fill_jobs(x, tr){
+	const jobs = sort_jobs(x);
+	const matrix = [
+		'Linux (gcc, debian:stable)',
+		'Linux (gcc, debian:testing)',
+		'Linux (clang, debian:stable)',
+		'Linux (clang, debian:testing)',
+		'MacOS',
+		'Windows (32)',
+		'Windows (64)',
+		'Windows Installer'
+	];
+	matrix.forEach(function(name){
+		if(jobs && jobs[name] && jobs[name].status){
+			const conclusion = jobs[name].conclusion;
+			const a = $("<a />").text(set_text(conclusion)).attr('href', jobs[name].html_url);
+			a.css('color', set_color(conclusion));
+			tr.add_cell(a);
+		} else {
+			tr.add_cell(null);
+		}
+	});
+	//t.columns.adjust().draw();
+}
+
+function td(x){
+	var el = $("<td />");
+	if(x) el.append(x);
+	return el;
+}
+
+function add_row(parent){
+	var tr = $("<tr/>");
+	tr.add_cell = function(x){tr.append(td(x))}
+	tr.appendTo(parent);
+	return tr;
+}
+
+octokit.actions.listRepoWorkflowRuns({
+	owner: "r-devel",
+	repo: "r-svn",
+	branch: "master",
+	per_page: 30
+}).then(({ data, headers, status }) => {
+	var tbody = $('tbody');
+	data.workflow_runs.forEach(function(run){
+		var tr = add_row($('tbody'));
+		fill_run(run, tr);
+		octokit.actions.listJobsForWorkflowRun({
+			owner: "r-devel",
+			repo: "r-svn",
+			run_id: run.id
+		}).then(({data, headers, status }) => {
+			fill_jobs(data.jobs, tr);
+		});
+	});
+});
+
+</script>
+</head>
+
+<body>
+<h1>R SVN build status</h1>
+
+<table border="1" summary="CRAN package check results summary" class="display" width="100%">
+<thead>
+<tr> 
+	<th> Date </th> 
+	<th> Revision </th> 
+	<th> Commit </th> 
+	<th> Author </th>  
+	<th> GCC (stable) </th>
+	<th> GCC (testing) </th>
+	<th> Clang (stable) </th>
+	<th> Clang (testing) </th>
+	<th> MacOS </th> 
+	<th> Win 32 </th> 
+	<th> Win 64 </th> 
+	<th> Win Installer </th> 
+</tr>
+</thead>
+<tbody>
+	
+</tbody>
+</table>
+</body>
+</html>
