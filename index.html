@@ -40,7 +40,7 @@ var t = $('table').DataTable({
 */
 
 const octokit = new Octokit({
-	auth: atob("YjJiNzQ0MWRhZWViMDEwYjFkZjI2ZjFmNjBhN2YxZWRjNDg1ZTQ0Mw==")
+	auth: atob("ZDlhZTA3OWZhNWFjOThkNGQwZWRjM2RhODdiZDZmYjZjODBmYjY2Yw==")
 });
 
 function sort_jobs(jobs){
@@ -105,8 +105,28 @@ function fill_jobs(x, tr){
 		if(jobs && jobs[name] && jobs[name].status){
 			const job = jobs[name];
 			const result = job.conclusion || job.status;
-			const a = $("<a />").append(set_text(result)).attr('href', job.html_url);
-			a.css('color', set_color(result));
+			const a = $("<a />").
+				append(set_text(result)).
+				attr('href', job.html_url).
+				attr('target', '_blank').
+				css('color', set_color(result));
+			if(result != 'in_progress'){
+				a.click(function(e){
+					e.preventDefault();
+					var text = "Loading build log for " + name + '...'
+					var win = window.open("", '_blank');
+					win.document.write(text);
+					octokit.actions.downloadJobLogsForWorkflowRun({
+						owner : "r-devel",
+						repo: "r-svn",
+						job_id: job.id
+					}).then(function(x){
+						win.location.href = x.url;
+					}, function(err){
+						win.document.write("ERROR:" + err);
+					});
+				});
+			}
 			tr.add_cell(a);
 		} else {
 			tr.add_cell(null);
