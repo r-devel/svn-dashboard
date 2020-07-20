@@ -31,7 +31,7 @@
 
 
 <script type="module">
-import { Octokit } from "https://cdn.pika.dev/@octokit/rest/17";
+import { Octokit } from "https://cdn.pika.dev/@octokit/rest/18";
 /*
 var t = $('table').DataTable({
 	paging: false,
@@ -127,7 +127,7 @@ function add_row(parent){
 	return tr;
 }
 
-octokit.actions.listRepoWorkflowRuns({
+octokit.actions.listWorkflowRunsForRepo({
 	owner: "r-devel",
 	repo: "r-svn",
 	branch: "master",
