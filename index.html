@@ -59,7 +59,7 @@ function fill_run(run, tr){
 	const author = commit.author.name;
 	const rawmsg = commit.message.split('\n\ngit-svn-id');
 	const message = rawmsg[0].substr(0, 60);
-	const revision = rawmsg.length > 1 ? rawmsg[1].match(/trunk@(?<rev>[0-9]*)/).groups.rev : "";
+	const revision = rawmsg.length > 1 ? rawmsg[1].match(/trunk@([0-9]*)/)[1] : "";
 	const date = new Date(commit.timestamp);	
 	tr.add_cell(date.toISOString().slice(0, 10));
 	tr.add_cell(revision);
