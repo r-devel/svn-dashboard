@@ -22,6 +22,10 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+td {
+	padding: 2px;
+}
 </style>
 
 <!--
@@ -164,6 +168,11 @@ octokit.actions.listWorkflowRunsForRepo({
 			run_id: run.id
 		}).then(({data, headers, status }) => {
 			fill_jobs(data.jobs, tr);
+			const github_link = $("<a />").
+				append('<img width=16 src="GitHub-Mark-32px.png"></img>').
+				attr('href', run.html_url).
+				attr('target', '_blank');
+			tr.add_cell(github_link);
 		});
 	});
 });
@@ -174,7 +183,7 @@ octokit.actions.listWorkflowRunsForRepo({
 <body>
 <h1>R SVN build status</h1>
 
-<p>This is an <b>unofficial tool</b> for tracking development of the <a href="https://www.r-project.org/">R project</a>, and testing patches via our <a href="https://github.com/r-devel/r-svn">GitHub SVN mirror</a>.</p>
+<p>This is an <b>unofficial tool</b> for tracking development of the <a href="https://www.r-project.org/">R project</a>, and testing patches via our <a href="https://github.com/r-devel/r-svn#readme">GitHub SVN mirror</a>.</p>
 
 <table border="1" summary="CRAN package check results summary" class="display" width="100%">
 <thead>
@@ -190,7 +199,8 @@ octokit.actions.listWorkflowRunsForRepo({
 	<th> MacOS </th> 
 	<th> Win 32 </th> 
 	<th> Win 64 </th> 
-	<th> Win Installer </th> 
+	<th> Win Installer </th>
+	<th>  </th>
 </tr>
 </thead>
 <tbody>
