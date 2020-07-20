@@ -103,8 +103,9 @@ function fill_jobs(x, tr){
 	];
 	matrix.forEach(function(name){
 		if(jobs && jobs[name] && jobs[name].status){
-			const result = jobs[name].conclusion || jobs[name].status;
-			const a = $("<a />").append(set_text(result)).attr('href', jobs[name].html_url);
+			const job = jobs[name];
+			const result = job.conclusion || job.status;
+			const a = $("<a />").append(set_text(result)).attr('href', job.html_url);
 			a.css('color', set_color(result));
 			tr.add_cell(a);
 		} else {
