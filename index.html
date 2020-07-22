@@ -156,13 +156,12 @@ octokit.actions.listWorkflowRunsForRepo({
 	owner: "r-devel",
 	repo: "r-svn",
 	branch: "master",
+	event: "push",
 	per_page: 30
 }).then(({ data, headers, status }) => {
 	var tbody = $('tbody');
 	data.workflow_runs.forEach(function(run){
 		var tr = add_row($('tbody'));
-		if(run.event == "pull_request")
-			return;
 		fill_run(run, tr);
 		octokit.actions.listJobsForWorkflowRun({
 			owner: "r-devel",
