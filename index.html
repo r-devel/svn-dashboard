@@ -103,7 +103,8 @@ function fill_jobs(x, tr){
 		'MacOS',
 		'Windows (32)',
 		'Windows (64)',
-		'Windows Installer'
+		'Windows Installer',
+		'Windows Installer (DEBUG)'
 	];
 	matrix.forEach(function(name){
 		if(jobs && jobs[name] && jobs[name].status){
@@ -201,6 +202,7 @@ octokit.actions.listWorkflowRunsForRepo({
 	<th> Win 32 </th> 
 	<th> Win 64 </th> 
 	<th> Win Installer </th>
+	<th> Win w/ Debug </th>
 	<th>  </th>
 </tr>
 </thead>
