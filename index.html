@@ -167,6 +167,7 @@ octokit.actions.listWorkflowRunsForRepo({
 		octokit.actions.listJobsForWorkflowRun({
 			owner: "r-devel",
 			repo: "r-svn",
+			filter: "latest",
 			run_id: run.id
 		}).then(({data, headers, status }) => {
 			fill_jobs(data.jobs, tr);
