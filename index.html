@@ -52,7 +52,9 @@ function sort_jobs(jobs){
 	var out = {};
 	jobs.forEach(function(x){
 		//todo: what about duplicate runs?
-		out[x.name] = x;
+		//for backward compatibility: mingw32 used to be called just '32'
+		var key = x.name || "";
+		out[key.replace('mingw', '')] = x;
 	});
 	return out;
 }
