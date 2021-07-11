@@ -165,7 +165,7 @@ octokit.actions.listWorkflowRunsForRepo({
 }).then(({ data, headers, status }) => {
 	var tbody = $('tbody');
 	data.workflow_runs.forEach(function(run){
-		if(run.head_commit.author.name == "Jeroen Ooms")
+		if(run.head_commit.message.indexOf('git-svn-id') < 0)
 			return;
 		var tr = add_row($('tbody'));
 		fill_run(run, tr);
