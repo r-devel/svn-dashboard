@@ -98,9 +98,9 @@ function set_color(result){
 function fill_jobs(x, tr){
 	const jobs = sort_jobs(x);
 	const matrix = [
-		'Linux (gcc, debian:stable)',
+//		'Linux (gcc, debian:stable)',
 		'Linux (gcc, debian:testing)',
-		'Linux (clang, debian:stable)',
+//		'Linux (clang, debian:stable)',
 		'Linux (clang, debian:testing)',
 		'MacOS',
 		'Windows (32)',
@@ -200,9 +200,7 @@ octokit.actions.listWorkflowRunsForRepo({
 	<th> Revision </th> 
 	<th> Commit </th> 
 	<th> Author </th>  
-	<th> GCC (stable) </th>
 	<th> GCC (testing) </th>
-	<th> Clang (stable) </th>
 	<th> Clang (testing) </th>
 	<th> MacOS </th> 
 	<th> Win 32 </th> 
