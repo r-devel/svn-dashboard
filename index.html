@@ -207,6 +207,7 @@ octokit.actions.listWorkflowRunsForRepo({
 			const github_link = $("<a />").
 				append('<img width=16 src="GitHub-Mark-32px.png"></img>').
 				attr('href', run.html_url).
+				css('padding', '0px 5px').
 				attr('target', '_blank');
 			tr.add_cell(github_link);
 		});
