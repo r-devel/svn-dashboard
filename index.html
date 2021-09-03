@@ -48,7 +48,6 @@ const octokit = new Octokit({
 });
 
 function sort_jobs(jobs){
-	console.log(jobs)
 	var out = {};
 	jobs.forEach(function(x){
 		//todo: what about duplicate runs?
@@ -57,6 +56,18 @@ function sort_jobs(jobs){
 		out[key.replace('mingw', '')] = x;
 	});
 	return out;
+}
+
+function sort_artifacts(artifacts){
+	var out = {};
+	artifacts.forEach(function(x){
+		out[x.name] = x;
+	});
+	return out;
+}
+
+function nightly_link(run_id, artifact_id){
+	return 'https://nightly.link/r-devel/r-svn/suites/' + run_id + '/artifacts/' + artifact_id;
 }
 
 function fill_run(run, tr){
@@ -95,8 +106,9 @@ function set_color(result){
 	return 'gray';
 }
 
-function fill_jobs(x, tr){
+function fill_jobs(x, y, tr, run_id){
 	const jobs = sort_jobs(x);
+	const artifacts = sort_artifacts(y);
 	const matrix = [
 		'Linux (gcc, debian:stable)',
 		'Linux (gcc, debian:testing)',
@@ -135,7 +147,15 @@ function fill_jobs(x, tr){
 					});
 				});
 			}
-			tr.add_cell(a);
+			var td = tr.add_cell(a);
+			if(name === 'Windows Installer' && artifacts['installer']){
+				const img = $('<img width=16 src="download-icon.png"></img>').css("padding-left", '10px');
+				$("<a>").append(img).attr("href", nightly_link(run_id, artifacts['installer'].id)).appendTo(td);
+			}
+			if(name === 'Windows Installer (DEBUG)' && artifacts['DEBUGinstaller']){
+				const img = $('<img width=16 src="download-icon.png"></img>').css("padding-left", '10px');
+				$("<a>").append(img).attr("href", nightly_link(run_id, artifacts['DEBUGinstaller'].id)).appendTo(td);
+			}
 		} else {
 			tr.add_cell(null);
 		}
@@ -151,7 +171,7 @@ function td(x){
 
 function add_row(parent){
 	var tr = $("<tr/>");
-	tr.add_cell = function(x){tr.append(td(x))}
+	tr.add_cell = function(x){return td(x).appendTo(tr);}
 	tr.appendTo(parent);
 	return tr;
 }
@@ -169,19 +189,28 @@ octokit.actions.listWorkflowRunsForRepo({
 			return;
 		var tr = add_row($('tbody'));
 		fill_run(run, tr);
-		octokit.actions.listJobsForWorkflowRun({
+		const p1 = octokit.actions.listJobsForWorkflowRun({
 			owner: "r-devel",
 			repo: "r-svn",
 			filter: "latest",
 			run_id: run.id
-		}).then(({data, headers, status }) => {
-			fill_jobs(data.jobs, tr);
+		});
+		const p2 = octokit.actions.listWorkflowRunArtifacts({
+			owner: "r-devel",
+			repo: "r-svn",
+			run_id: run.id
+		});
+		Promise.allSettled([p1,p2]).then(promises => {
+			const jobs = promises[0].value.data;
+			const artifacts = promises[1].value.data;
+			fill_jobs(jobs.jobs, artifacts.artifacts, tr, run.id);
 			const github_link = $("<a />").
 				append('<img width=16 src="GitHub-Mark-32px.png"></img>').
 				attr('href', run.html_url).
 				attr('target', '_blank');
 			tr.add_cell(github_link);
 		});
+
 	});
 });
 
@@ -209,8 +238,8 @@ octokit.actions.listWorkflowRunsForRepo({
 	<th> Win 64 </th> 
 	<th> Win 64-ucrt </th>
 	<th> Win Installer </th>
-	<th> Win w/ Debug </th>
-	<th> Downloads </th>
+	<th> Win Debug </th>
+	<th> Logs </th>
 </tr>
 </thead>
 <tbody>
