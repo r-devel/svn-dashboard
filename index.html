@@ -77,10 +77,11 @@ function fill_run(run, tr){
 	const rawmsg = commit.message.split('\n\ngit-svn-id');
 	const message = rawmsg[0].substr(0, 60);
 	const revision = rawmsg.length > 1 ? rawmsg[1].match(/trunk@([0-9]*)/)[1] : "";
-	const date = new Date(commit.timestamp);	
+	const date = new Date(commit.timestamp);
+  const link = $('<a href="https://github.com/r-devel/r-svn/commit/'+id+'"></a>').append($('<i></i>').text(message));
 	tr.add_cell(date.toISOString().slice(0, 10));
 	tr.add_cell(revision);
-	tr.add_cell('<a href="https://github.com/r-devel/r-svn/commit/'+id+'"><i>'+ message + '</i></a>');
+  tr.add_cell(link);
 	tr.add_cell(author);
 }
 
