@@ -116,8 +116,6 @@ function fill_jobs(x, y, tr, run_id){
 		'Linux (clang, debian:stable)',
 		'Linux (clang, debian:testing)',
 		'MacOS',
-		'Windows (32)',
-		'Windows (64)',
 		'Windows (ucrt64)',
 		'Windows Installer',
 		'Windows Installer (DEBUG)'
@@ -186,8 +184,8 @@ octokit.actions.listWorkflowRunsForRepo({
 }).then(({ data, headers, status }) => {
 	var tbody = $('tbody');
 	data.workflow_runs.forEach(function(run){
-		//if(run.head_commit.message.indexOf('git-svn-id') < 0)
-		//	return;
+		if(run.head_commit.message.indexOf('git-svn-id') < 0)
+			return;
 		var tr = add_row($('tbody'));
 		fill_run(run, tr);
 		const p1 = octokit.actions.listJobsForWorkflowRun({
@@ -230,7 +228,7 @@ octokit.actions.listWorkflowRunsForRepo({
   <th colspan="4">Commit</th>
   <th colspan="2">GCC</th>
   <th colspan="3">Clang</th>
-  <th colspan="5">Windows (mingw-w64)</th>
+  <th colspan="3">Windows (mingw-w64)</th>
 </tr>
 <tr> 
 	<th> Date </th> 
@@ -242,12 +240,10 @@ octokit.actions.listWorkflowRunsForRepo({
 	<th> stable </th>
 	<th> testing </th>
 	<th> MacOS </th> 
-	<th> i386 </th> 
-	<th> x64 </th> 
 	<th> x64-ucrt </th>
 	<th> Installer </th>
 	<th> Debug </th>
-	<th> Logs </th>
+	<th> CI </th>
 </tr>
 </thead>
 <tbody>
