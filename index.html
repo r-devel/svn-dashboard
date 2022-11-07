@@ -175,43 +175,63 @@ function add_row(parent){
 	return tr;
 }
 
-octokit.actions.listWorkflowRunsForRepo({
-	owner: "r-devel",
-	repo: "r-svn",
-	branch: "master",
-	event: "push",
-	per_page: 50
-}).then(({ data, headers, status }) => {
-	var tbody = $('tbody');
-	data.workflow_runs.forEach(function(run){
-		if(run.head_commit.message.indexOf('git-svn-id') < 0)
-			return;
-		var tr = add_row($('tbody'));
-		fill_run(run, tr);
-		const p1 = octokit.actions.listJobsForWorkflowRun({
-			owner: "r-devel",
-			repo: "r-svn",
-			filter: "latest",
-			run_id: run.id
+function load_more_results(page){
+	return octokit.actions.listWorkflowRunsForRepo({
+		owner: "r-devel",
+		repo: "r-svn",
+		branch: "master",
+		event: "push",
+		page: page,
+		per_page: 30
+	}).then(({ data, headers, status }) => {
+		var tbody = $('tbody');
+		var allpromises = data.workflow_runs.map(function(run){
+			if(run.head_commit.message.indexOf('git-svn-id') < 0)
+				return;
+			var tr = add_row($('tbody'));
+			fill_run(run, tr);
+			const p1 = octokit.actions.listJobsForWorkflowRun({
+				owner: "r-devel",
+				repo: "r-svn",
+				filter: "latest",
+				run_id: run.id
+			});
+			const p2 = octokit.actions.listWorkflowRunArtifacts({
+				owner: "r-devel",
+				repo: "r-svn",
+				run_id: run.id
+			});
+			Promise.allSettled([p1,p2]).then(promises => {
+				const jobs = promises[0].value.data;
+				const artifacts = promises[1].value.data;
+				fill_jobs(jobs.jobs, artifacts.artifacts, tr, run.id);
+				const github_link = $("<a />").
+					append('<img width=16 src="GitHub-Mark-32px.png"></img>').
+					attr('href', run.html_url).
+					css('padding', '0px 5px').
+					attr('target', '_blank');
+				tr.add_cell(github_link);
+			});
 		});
-		const p2 = octokit.actions.listWorkflowRunArtifacts({
-			owner: "r-devel",
-			repo: "r-svn",
-			run_id: run.id
-		});
-		Promise.allSettled([p1,p2]).then(promises => {
-			const jobs = promises[0].value.data;
-			const artifacts = promises[1].value.data;
-			fill_jobs(jobs.jobs, artifacts.artifacts, tr, run.id);
-			const github_link = $("<a />").
-				append('<img width=16 src="GitHub-Mark-32px.png"></img>').
-				attr('href', run.html_url).
-				css('padding', '0px 5px').
-				attr('target', '_blank');
-			tr.add_cell(github_link);
-		});
-
+		$('body,html').animate({ scrollTop: $('body').height() }, 800);
+		return Promise.allSettled(allpromises);
 	});
+}
+
+$(function(){
+  var pagenum = 0;
+	function load_one_page(){
+		$(".morelink").toggle();
+		load_more_results(++pagenum).then(function(){
+			$(".morelink").toggle();
+		});
+	};
+	$("span.morelink").hide();
+	$("a.morelink").click(function(e){
+		e.preventDefault();
+		load_one_page();
+	});
+	load_one_page();
 });
 
 </script>
@@ -250,5 +270,9 @@ octokit.actions.listWorkflowRunsForRepo({
 	
 </tbody>
 </table>
+
+
+<p align="center"><a class="morelink" href="#">show more (older) revisisons</a><span class="morelink">Please wait...</span></p>
+
 </body>
 </html>
