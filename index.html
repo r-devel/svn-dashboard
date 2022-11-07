@@ -180,7 +180,7 @@ octokit.actions.listWorkflowRunsForRepo({
 	repo: "r-svn",
 	branch: "master",
 	event: "push",
-	per_page: 30
+	per_page: 50
 }).then(({ data, headers, status }) => {
 	var tbody = $('tbody');
 	data.workflow_runs.forEach(function(run){
