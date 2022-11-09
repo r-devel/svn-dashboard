@@ -221,14 +221,13 @@ function load_more_results(page){
 $(function(){
   var pagenum = 0;
 	function load_one_page(){
-		$(".morelink").toggle();
 		load_more_results(++pagenum).then(function(){
 			$(".morelink").toggle();
 		});
 	};
-	$("span.morelink").hide();
 	$("a.morelink").click(function(e){
 		e.preventDefault();
+		$(".morelink").toggle();
 		load_one_page();
 	});
 	load_one_page();
@@ -272,7 +271,7 @@ $(function(){
 </table>
 
 
-<p align="center"><a class="morelink" href="#">show more (older) revisisons</a><span class="morelink">Please wait...</span></p>
+<p align="center"><a class="morelink" style="display: none;" href="#">show more (older) revisisons</a><span class="morelink">Please wait...</span></p>
 
 </body>
 </html>
