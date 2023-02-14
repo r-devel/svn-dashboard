@@ -186,8 +186,8 @@ function load_more_results(page){
 	}).then(({ data, headers, status }) => {
 		var tbody = $('tbody');
 		var allpromises = data.workflow_runs.map(function(run){
-			//if(run.head_commit.message.indexOf('git-svn-id') < 0)
-			//	return;
+			if(run.head_commit.message.indexOf('git-svn-id') < 0)
+				return;
 			var tr = add_row($('tbody'));
 			fill_run(run, tr);
 			const p1 = octokit.actions.listJobsForWorkflowRun({
