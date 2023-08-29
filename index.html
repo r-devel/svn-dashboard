@@ -34,16 +34,17 @@ td {
 -->
 
 <script type="module">
-import { Octokit } from "https://esm.sh/@octokit/rest@18.5.6";
-import { createAppAuth } from 'https://esm.sh/@octokit/auth-app@6.0.0';
+/* These link to the mjs files below */
+//import { Octokit } from "https://esm.sh/@octokit/rest@18.5.6?bundle&target=es2015";
+//import { createAppAuth } from 'https://esm.sh/@octokit/auth-app@6.0.0?bundle&target=es2015';
 
-/*
-var t = $('table').DataTable({
-	paging: false,
-	searching: false
-});
-*/
+/* Devel */
+//import { Octokit } from "https://esm.sh/v131/@octokit/rest@18.5.6/es2015/rest.bundle.mjs";
+//import { createAppAuth } from 'https://esm.sh/v131/@octokit/auth-app@6.0.0/es2015/auth-app.bundle.mjs';
 
+/* Production */
+import { Octokit } from "https://contributor.r-project.org/svn-dashboard/js/rest.bundle.mjs";
+import { createAppAuth } from 'https://contributor.r-project.org/svn-dashboard/js/auth-app.bundle.mjs';
 
 // GitHub App key: https://github.com/organizations/r-devel/settings/apps/svn-dashboard-front-end-auth
 var appkey = "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2UUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktjd2dnU2pBZ0VBQW9JQkFRRFh1RnBlOTFoQlFocGoKZTFUYloweHlMNHh2cWl4Q0lRaXZsaXJ1YjRqSFZkdHNhTnVsYThWL0ZCRzM5dHpCeUhtemUwNWN6Qmdpakl3RAoxZG85UjVnL1lqS0R6OENtT2xSNTMrdGNiWXVLWlY4Q3Vub2JBMTdLNUo0QkdLUyswcExwRUJ4M2tyWER4RUtKCnBDKzgrTU5ZWkFaV0dlaHl1emtXQllkQlhRR09OM0x5MVZFaUk1S3hLa29raUwvRkxrTTJrOHg2WlVrWVRRUXUKeDkrcHcxdTJmRFZtV3g3YmxqaFNuSDRRYUR2Zk8xcjMxcytZckhtd3lqL2ZxS0REc0FuZHZTQVhBQlNHd0k1Uwo0QVdhWk0xR0x6MlY0QmRWTUtRenMra0tESlhwUkU1TTdzaU9CK1djNHdjend0Vncxa2xCazBkUjJ5aXZyNXp1Cm1kcENrVVVqQWdNQkFBRUNnZ0VBUStIWVZsQUJicSt0ZkNhZ1FsYVVRTTVqby9QcDczbFRzV1ZRNXkwajNvNU8KK1NOYUV3a0I0Z1pmdVFNdTNyQUdWQXQyVWs5TFBQdjdSMjJ4T2wxZ05IbmpLWVZqdXl0Wnordzl0UjBucndwTgpScCtGc3lCeFlPbG1LelFsQzROYUJZc3pXaEZKcjJ3QUFDNHhjNGJZZWVVbjlVbzcwbmJGOVA4U1crZzNpQmVvClhwaGVReVQ3aklKVFdYOUFicDlyZElKQm90K1RiUktoQ1BrcXJEZ0pZQlNPZGpqc0tDVWtyRnVvWTlmak5EQTUKOGswWFpqVFg3MkdiTFBmQ0dpSU1nOHNSdU9RV2t0N3grLzVGUmJJNENUTmthRjFxVlZEbjU2WnFxLzdMcDNIZQpmVytqanJMRXNibjlKZmZLM0N4aHhYc2VOYmVlSGF3T0NYVVMyTkRYMFFLQmdRRC8wZ1NHbXA1dURROEZ0YVVxCmF0WVNldEkwNmluRkt0M2E5ckRUMlpxWURNOUtZa29RSHRJL20vMDRPMWs2blRlNjdrWjBnUjRldFhJb0IxWDgKQ2pFK3VNMnAwcmlIaUFtNGlSMmtUd1kwYk5XRitmN3A5Q1lYMmVMcjZVZHNpWDFKK3MxMytZeHJmSjI3SlkwYwpVbVAwZy9waVdmNW41dElEQkVtcy9COXdld0tCZ1FEWDN5Q2wxM1Y0Q2tIZjRBRVE0U1NEUWhKdEFraVNDSXRUClZIMDhyZm4rOWJVNmJUcEFzQkFkKy84QjZhbEtINFpNYlZSTnl5eURCaityVWhMVFlBNHZLUS9STHJId2liWlEKeDdVN0pnKzJ0ZFNqaWlGNE9Pc2FRTWwvNG9ZaGtDdWozWkZDR2hVNVAzVDNQNHFJZUxhYTRLcVArZW1qNGdBZwpWVFAxSkx2aGVRS0JnQWxLU3pmSUxiQzVjSzQ0Wm9NZjFoNWRyM3lVZEdmZ29xWHRCNGJxQkI4NWQ5MnZyQmpoCnhhamh0VlJ4YzFBWm5ZaUFWcmFzYWJlYngwV0UzcTZFZ0QxUzRNVW1EZVYrSHp4QVhuODFEM2lmNnpFdVh2K0kKQ2tvYmM0NDFybzVXZitKTDVXSlNBYk4xbHhUUXpFc1hBdUpDV0xseG96ZUt2bDIxcmlkR0VLNDVBb0dBTkh6MQpWRDJxTzFETEthTXV2eXJ2Rk5jNDRiWi9iTHFWSGVMYVBLblVzbkNONnpIcHl4YkVKSFpFVC9PL2pOMVRhenZlCkZyaEREMnl5aUhhQlMxSDh3T3pNQXNIRzFFUzN4clo0VTNSeXQ2dElrNmNmY2pyc3QwcHZkQi9oRzBJUnlsc3kKV1k4Ny85cDFGelVrK3YvVzdwdVgvVC8zMWpnNmJhSXA2djVPaklrQ2dZRUFoa042R2k3Q3pvTGM5dWxSUjZkcQpJbUZxQ0M5aHl6TU1JaHZwbWRtRVZwSlJkMDVhYTljZnFnRldFaU1rZkFXdEt3SFNIaWMyUXFCbUdQbzBtbWhOCjlzeDNmVjlKbG54c3hOcHNjR2syeityRkU1dDV5VVlhOW5BN1F5QXIwQVl4YStSalNCdCtYaEwvdWxSNDYzQm4KekovOGQ0dktyTjVVRmNJL3Jta0lzakU9Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K";
