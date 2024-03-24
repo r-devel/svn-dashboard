@@ -136,6 +136,7 @@ function fill_jobs(x, y, tr, run_id){
 		'Linux (clang, debian:stable)',
 		'Linux (clang, debian:testing)',
 		'MacOS (macOS-13)',
+		'MacOS (macOS-14)',
 		'Windows (check)',
 		'Windows (installer)'
 	];
@@ -269,7 +270,8 @@ function init_page(){
 <tr>
   <th colspan="4">Commit</th>
   <th colspan="2">GCC</th>
-  <th colspan="3">Clang</th>
+  <th colspan="2">Clang</th>
+  <th colspan="2">MacOS</th>
   <th colspan="3">Windows (mingw-w64)</th>
 </tr>
 <tr> 
@@ -281,7 +283,8 @@ function init_page(){
 	<th> testing </th>
 	<th> stable </th>
 	<th> testing </th>
-	<th> MacOS </th> 
+	<th> intel </th> 
+	<th> arm64 </th> 
 	<th> check </th>
 	<th> installer </th>
 	<th> CI </th>
