@@ -135,7 +135,7 @@ function fill_jobs(x, y, tr, run_id){
 		'Linux (gcc, debian:testing)',
 		'Linux (clang, debian:stable)',
 		'Linux (clang, debian:testing)',
-		'MacOS',
+		'MacOS (macOS-13)',
 		'Windows (check)',
 		'Windows (installer)'
 	];
@@ -145,6 +145,9 @@ function fill_jobs(x, y, tr, run_id){
 		matrix[6] = 'Windows Installer';
 	}
 	matrix.forEach(function(name){
+		if(name === 'MacOS (macOS-13)' && jobs['MacOS']){
+			name = 'MacOS'
+		}
 		if(jobs && jobs[name] && jobs[name].status){
 			const job = jobs[name];
 			const result = job.conclusion || job.status;
