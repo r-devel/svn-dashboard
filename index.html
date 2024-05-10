@@ -203,7 +203,7 @@ function load_more_results(page){
 	return octokit.actions.listWorkflowRunsForRepo({
 		owner: "r-devel",
 		repo: "r-svn",
-		branch: "master",
+//		branch: "main",
 		event: "push",
 		page: page,
 		per_page: 30
@@ -212,6 +212,8 @@ function load_more_results(page){
 		var allpromises = data.workflow_runs.map(function(run){
 			if(run.head_commit.message.indexOf('git-svn-id') < 0)
 				return;
+			if(run.head_branch != 'main' && run.head_branch != 'master')
+				return; //remove when we have enough 'main' runs to forget about 'master'
 			var tr = add_row($('tbody'));
 			fill_run(run, tr);
 			const p1 = octokit.actions.listJobsForWorkflowRun({
