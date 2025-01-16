@@ -141,10 +141,6 @@ function fill_jobs(x, y, tr, run_id){
 		'Windows (installer)'
 	];
 
-	if(run_id < 4158994618){
-		matrix[5] = 'Windows (ucrt64)';
-		matrix[6] = 'Windows Installer';
-	}
 	matrix.forEach(function(name){
 		if(name === 'MacOS (macOS-13)' && jobs['MacOS']){
 			name = 'MacOS'
@@ -203,7 +199,7 @@ function load_more_results(page){
 	return octokit.actions.listWorkflowRunsForRepo({
 		owner: "r-devel",
 		repo: "r-svn",
-//		branch: "main",
+		branch: "main",
 		event: "push",
 		page: page,
 		per_page: 30
@@ -212,8 +208,6 @@ function load_more_results(page){
 		var allpromises = data.workflow_runs.map(function(run){
 			if(run.head_commit.message.indexOf('git-svn-id') < 0)
 				return;
-			if(run.head_branch != 'main' && run.head_branch != 'master')
-				return; //remove when we have enough 'main' runs to forget about 'master'
 			var tr = add_row($('tbody'));
 			fill_run(run, tr);
 			const p1 = octokit.actions.listJobsForWorkflowRun({
