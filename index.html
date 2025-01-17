@@ -73,7 +73,7 @@ function sort_jobs(jobs){
 		//todo: what about duplicate runs?
 		//for backward compatibility: mingw32 used to be called just '32'
 		var key = x.name || "";
-		out[key.replace('mingw', '')] = x;
+		out[key.replace(', intel', '')] = x;
 	});
 	return out;
 }
