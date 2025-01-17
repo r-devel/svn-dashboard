@@ -132,9 +132,13 @@ function fill_jobs(x, y, tr, run_id){
 	const artifacts = sort_artifacts(y);
 	const matrix = [
 		'Linux (gcc, debian:stable)',
+		'Linux (gcc, debian:stable, arm)',
 		'Linux (gcc, debian:testing)',
+		'Linux (gcc, debian:testing, arm)',
 		'Linux (clang, debian:stable)',
+		'Linux (clang, debian:stable, arm)',
 		'Linux (clang, debian:testing)',
+		'Linux (clang, debian:testing, arm)',
 		'MacOS (macOS-13)',
 		'MacOS (macOS-14)',
 		'Windows (check)',
@@ -264,23 +268,33 @@ function init_page(){
 <table border="1" cellpadding="0" cellspacing="0" summary="CRAN package check results summary" class="display" width="100%">
 <thead>
 <tr>
-  <th colspan="4">Commit</th>
-  <th colspan="2">GCC</th>
-  <th colspan="2">Clang</th>
-  <th colspan="2">MacOS</th>
-  <th colspan="3">Windows (mingw-w64)</th>
+  <th colspan="4" rowspan="2">Commit</th>
+  <th colspan="4">GCC</th>
+  <th colspan="4">Clang</th>
+  <th colspan="2" rowspan="2">MacOS</th>
+  <th colspan="2" rowspan="2">Windows (mingw-w64)</th>
+</tr>
+<tr>
+<th colspan="2">stable</th>
+<th colspan="2">testing</th>
+<th colspan="2">stable</th>
+<th colspan="2">testing</th>
 </tr>
 <tr> 
 	<th> Date </th> 
 	<th> Revision </th> 
 	<th> Message </th> 
 	<th> Author </th>  
-	<th> stable </th>
-	<th> testing </th>
-	<th> stable </th>
-	<th> testing </th>
+	<th> amd </th>
+	<th> arm </th>
+	<th> amd </th>
+	<th> arm </th>
+	<th> amd </th>
+	<th> arm </th>
+	<th> amd </th>
+	<th> arm </th>
 	<th> intel </th> 
-	<th> arm64 </th> 
+	<th> arm </th> 
 	<th> check </th>
 	<th> installer </th>
 	<th> CI </th>
