@@ -142,7 +142,9 @@ function fill_jobs(x, y, tr, run_id){
 		'MacOS (macOS-13)',
 		'MacOS (macOS-14)',
 		'Windows (check)',
-		'Windows (installer)'
+		'Windows (check, arm)',
+		'Windows (installer)',
+		'Windows (installer, arm)'
 	];
 
 	matrix.forEach(function(name){
@@ -175,10 +177,10 @@ function fill_jobs(x, y, tr, run_id){
 				});
 			}
 			var td = tr.add_cell(a);
-			if((name === 'Windows Installer' || name === 'Windows (installer)') && artifacts['installer']){
-				const img = $('<img width=16 src="download-icon.png"></img>').css("padding-left", '10px');
-				$("<a>").append(img).attr("href", nightly_link(run_id, artifacts['installer'].id)).appendTo(td);
-			}
+			//if((name === 'Windows Installer' || name === 'Windows (installer)') && artifacts['installer']){
+			//	const img = $('<img width=16 src="download-icon.png"></img>').css("padding-left", '10px');
+			//	$("<a>").append(img).attr("href", nightly_link(run_id, artifacts['installer'].id)).appendTo(td);
+			//}
 		} else {
 			tr.add_cell(null);
 		}
@@ -231,7 +233,7 @@ function load_more_results(page){
 				fill_jobs(jobs.jobs, artifacts.artifacts, tr, run.id);
 				const github_link = $("<a />").
 					append('<img width=16 src="GitHub-Mark-32px.png"></img>').
-					attr('href', run.html_url).
+					attr('href', run.html_url + '#artifacts').
 					css('padding', '0px 5px').
 					attr('target', '_blank');
 				tr.add_cell(github_link);
@@ -269,35 +271,39 @@ function init_page(){
 <thead>
 <tr>
   <th colspan="4" rowspan="2">Commit</th>
-  <th colspan="4">GCC</th>
-  <th colspan="4">Clang</th>
+  <th colspan="4">Linux GCC</th>
+  <th colspan="4">Linux Clang</th>
   <th colspan="2" rowspan="2">MacOS</th>
-  <th colspan="2" rowspan="2">Windows (mingw-w64)</th>
+  <th colspan="4" rowspan="1">Windows</th>
+  <th colspan="1" rowspan="3">Files</th>
 </tr>
 <tr>
-<th colspan="2">stable</th>
-<th colspan="2">testing</th>
-<th colspan="2">stable</th>
-<th colspan="2">testing</th>
+	<th colspan="2">stable</th>
+	<th colspan="2">testing</th>
+	<th colspan="2">stable</th>
+	<th colspan="2">testing</th>
+	<th colspan="2">check</th>
+	<th colspan="2">installer</th>
 </tr>
 <tr> 
 	<th> Date </th> 
 	<th> Revision </th> 
 	<th> Message </th> 
 	<th> Author </th>  
-	<th> amd </th>
+	<th> intel </th>
 	<th> arm </th>
-	<th> amd </th>
+	<th> intel </th>
 	<th> arm </th>
-	<th> amd </th>
+	<th> intel </th>
 	<th> arm </th>
-	<th> amd </th>
+	<th> intel </th>
 	<th> arm </th>
 	<th> intel </th> 
 	<th> arm </th> 
-	<th> check </th>
-	<th> installer </th>
-	<th> CI </th>
+	<th> intel </th>
+	<th> arm </th>
+	<th> intel </th>
+	<th> arm </th>
 </tr>
 </thead>
 <tbody>
