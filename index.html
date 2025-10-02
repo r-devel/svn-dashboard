@@ -139,8 +139,8 @@ function fill_jobs(x, y, tr, run_id){
 		'Linux (clang, debian:stable, arm)',
 		'Linux (clang, debian:testing)',
 		'Linux (clang, debian:testing, arm)',
-		'MacOS (macOS-13)',
-		'MacOS (macOS-14)',
+		'MacOS (macOS-15-intel)',
+		'MacOS (macOS-15)',
 		'Windows (check)',
 		'Windows (check, arm)',
 		'Windows (installer)',
@@ -148,8 +148,11 @@ function fill_jobs(x, y, tr, run_id){
 	];
 
 	matrix.forEach(function(name){
-		if(name === 'MacOS (macOS-13)' && jobs['MacOS']){
-			name = 'MacOS'
+		if(name === 'MacOS (macOS-15)' && jobs['MacOS (macOS-14)']){
+			name = 'MacOS (macOS-14)';
+		}
+		if(name === 'MacOS (macOS-15-intel)' && jobs['MacOS (macOS-13)']){
+			name = 'MacOS (macOS-13)';
 		}
 		if(jobs && jobs[name] && jobs[name].status){
 			const job = jobs[name];
