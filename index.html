@@ -71,17 +71,6 @@ appOctokit.auth({type: "installation"}).then(function(x){
 	console.log("Failed to authenticate with key: " + err);
 })
 
-function sort_jobs(jobs){
-	var out = {};
-	jobs.forEach(function(x){
-		//todo: what about duplicate runs?
-		//for backward compatibility: mingw32 used to be called just '32'
-		var key = x.name || "";
-		out[key.replace(', intel', '')] = x;
-	});
-	return out;
-}
-
 function sort_artifacts(artifacts){
 	var out = {};
 	artifacts.forEach(function(x){
@@ -131,35 +120,26 @@ function set_color(result){
 	return 'gray';
 }
 
-function fill_jobs(x, y, tr, run_id){
-	const jobs = sort_jobs(x);
+function fill_jobs(jobs, y, tr, run_id){
 	const artifacts = sort_artifacts(y);
 	const matrix = [
-		'Linux (gcc, debian:stable)',
-		'Linux (gcc, debian:stable, arm)',
-		'Linux (gcc, debian:testing)',
-		'Linux (gcc, debian:testing, arm)',
-		'Linux (clang, debian:stable)',
-		'Linux (clang, debian:stable, arm)',
-		'Linux (clang, debian:testing)',
-		'Linux (clang, debian:testing, arm)',
-		'MacOS (macOS-15-intel)',
-		'MacOS (macOS-26)',
-		'Windows (check)',
-		'Windows (check, arm)',
-		'Windows (installer)',
-		'Windows (installer, arm)'
+		/Linux.*gcc.*stable.*intel/,
+		/Linux.*gcc.*stable.*arm/,
+		/Linux.*gcc.*testing.*intel/,
+		/Linux.*gcc.*testing.*arm/,
+		/Linux.*clang.*stable.*intel/,
+		/Linux.*clang.*stable.*arm/,
+		/Linux.*clang.*testing.*intel/,
+		/Linux.*clang.*testing.*arm/,
+		/MacOS.*intel/,
+		/(?!.*intel).*MacOS/,
+		/Windows.*(x86_64|check, intel)/,
+		/Windows.*(aarch64|check, arm)/
 	];
 
-	matrix.forEach(function(name){
-		if(name === 'MacOS (macOS-26)' && jobs['MacOS (macOS-15)']){
-			name = 'MacOS (macOS-15)';
-		}
-		if(name === 'MacOS (macOS-15-intel)' && jobs['MacOS (macOS-13)']){
-			name = 'MacOS (macOS-13)';
-		}
-		if(jobs && jobs[name] && jobs[name].status){
-			const job = jobs[name];
+	matrix.forEach(function(regex){
+		const job = jobs.find(x => x.name.match(regex));
+		if(job && job.status){
 			const result = job.conclusion || job.status;
 			const a = $("<a />").
 				append(set_text(result)).
@@ -169,7 +149,7 @@ function fill_jobs(x, y, tr, run_id){
 			if(result != 'in_progress' && result != 'queued'){
 				a.click(function(e){
 					e.preventDefault();
-					var text = "Loading build log for " + name + '...'
+					var text = "Loading build log for " + job.name + '...'
 					var win = window.open("", '_blank');
 					win.document.write(text);
 					octokit.actions.downloadJobLogsForWorkflowRun({
@@ -281,7 +261,7 @@ function init_page(){
   <th colspan="4">Linux GCC</th>
   <th colspan="4">Linux Clang</th>
   <th colspan="2" rowspan="2">MacOS</th>
-  <th colspan="4" rowspan="1">Windows</th>
+  <th colspan="2" rowspan="1">Windows</th>
   <th colspan="1" rowspan="3">Files</th>
 </tr>
 <tr>
@@ -290,7 +270,6 @@ function init_page(){
 	<th colspan="2">stable</th>
 	<th colspan="2">testing</th>
 	<th colspan="2">check</th>
-	<th colspan="2">installer</th>
 </tr>
 <tr> 
 	<th> Date </th> 
@@ -307,8 +286,6 @@ function init_page(){
 	<th> arm </th>
 	<th> intel </th> 
 	<th> arm </th> 
-	<th> intel </th>
-	<th> arm </th>
 	<th> intel </th>
 	<th> arm </th>
 </tr>
