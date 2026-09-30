@@ -189,16 +189,20 @@ function add_row(parent){
 }
 
 function load_more_results(page){
+	//Sept 2026: GH has a bug that causes query by branch/event via the API
+	//to return outdated runs, so disable that for now and filter in client.
 	return octokit.actions.listWorkflowRunsForRepo({
 		owner: "r-devel",
 		repo: "r-svn",
-		branch: "main",
-		event: "push",
+		//branch: "main",
+		//event: "push",
 		page: page,
-		per_page: 30
+		per_page: 50,
 	}).then(({ data, headers, status }) => {
 		var tbody = $('tbody');
 		var allpromises = data.workflow_runs.map(function(run){
+			if(run.head_branch !== 'main' || run.event !== 'push')
+				return;
 			if(run.head_commit.message.indexOf('git-svn-id') < 0)
 				return;
 			var tr = add_row($('tbody'));
