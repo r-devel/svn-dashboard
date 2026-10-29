@@ -194,10 +194,10 @@ function load_more_results(page){
 	return octokit.actions.listWorkflowRunsForRepo({
 		owner: "r-devel",
 		repo: "r-svn",
-		//branch: "main",
-		//event: "push",
+		branch: "main",
+		event: "push",
 		page: page,
-		per_page: 50,
+		per_page: 30,
 	}).then(({ data, headers, status }) => {
 		var tbody = $('tbody');
 		var allpromises = data.workflow_runs.map(function(run){
