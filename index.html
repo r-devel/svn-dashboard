@@ -131,6 +131,8 @@ function fill_jobs(jobs, y, tr, run_id){
 		/Linux.*clang.*stable.*arm/,
 		/Linux.*clang.*testing.*intel/,
 		/Linux.*clang.*testing.*arm/,
+		/Alpine.*intel/,
+		/Alpine.*arm/,
 		/(?!.*intel).*MacOS/,
 		/Windows.*(x86_64|check, intel)/,
 		/Windows.*(aarch64|check, arm)/
@@ -263,6 +265,7 @@ function init_page(){
   <th colspan="4" rowspan="2">Commit</th>
   <th colspan="4">Linux GCC</th>
   <th colspan="4">Linux Clang</th>
+  <th colspan="2" rowspan="2">Alpine</th>
   <th colspan="1" rowspan="2">Mac</th>
   <th colspan="2" rowspan="2">Windows</th>
   <th colspan="1" rowspan="3">Files</th>
@@ -278,6 +281,8 @@ function init_page(){
 	<th> Revision </th> 
 	<th> Message </th> 
 	<th> Author </th>  
+	<th> intel </th>
+	<th> arm </th>
 	<th> intel </th>
 	<th> arm </th>
 	<th> intel </th>
